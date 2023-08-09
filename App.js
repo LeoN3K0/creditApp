@@ -9,7 +9,7 @@ export default function App() {
   return (
     <PaperProvider>
       <NavigationContainer>
-        <StatusBar style='auto' />
+        <StatusBar style={colorScheme === 'dark' ? 'dark' : 'light'} />
         <StackNav />
       </NavigationContainer>
     </PaperProvider>

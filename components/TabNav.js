@@ -7,7 +7,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import HomeScreen from '../screens/HomeScreen';
 import CustomTabBarCenter from './CustomTabBarCenter';
-import CustomHeader from './CustomHeader';
+import CreditHeader from './CreditHeader';
+import YourCardsScreen from '../screens/YourCardsScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -56,8 +57,8 @@ function TabNav() {
         {/* Add the tab screens as before */}
         <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen name="Arrow" component={HomeScreen} />
-        <Tab.Screen name="Your Cards" component={HomeScreen} options={{
-            header: () => <CustomHeader title="Your cards" />,
+        <Tab.Screen name="Your Cards" component={YourCardsScreen} options={{
+            header: () => <CreditHeader title="Your cards" />,
           }} />
         <Tab.Screen name="Cards" component={HomeScreen} />
         <Tab.Screen name="Profile" component={HomeScreen} />
