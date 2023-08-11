@@ -1,5 +1,4 @@
 import React from 'react';
-import { View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { AreaChart } from 'react-native-svg-charts';
 import * as shape from 'd3-shape';
