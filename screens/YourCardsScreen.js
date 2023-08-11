@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useTheme, Text } from 'react-native-paper'; 
 import StatsComponent from '../components/StatsComponent';
+import Transaction from '../components/Transactions';
 
 
 function YourCardsScreen() {
@@ -10,6 +11,7 @@ function YourCardsScreen() {
   return (
     <View style={[styles.container, { backgroundColor: '#101010' }]}>
       <StatsComponent />
+      <Transaction />
     </View>
   );
 }

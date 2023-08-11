@@ -1,12 +1,15 @@
 import React from 'react';
 import { Card, Text, Title, Avatar } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
-import { View } from 'react-native';
+import { View, StyleSheet} from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 const CreditCard = ({ cardLimits, currency, expiry, cardNumber }) => {
+const navigation = useNavigation();
+
   return (
-    <Card style={styles.card}>
+    <Card style={styles.card} onPress={() => navigation.navigate('CardSettings')}>
       <LinearGradient
         colors={['#fa5c56', '#f5b468']}
         start={{ x: 0, y: 0.5 }} // Start at the left center
@@ -49,7 +52,7 @@ const CreditCard = ({ cardLimits, currency, expiry, cardNumber }) => {
   );
 };
 
-const styles = {
+const styles = StyleSheet.create({
   card: {
     borderRadius: 20, 
     width: '98%',
@@ -77,6 +80,6 @@ const styles = {
     justifyContent: 'space-between',
     marginTop: 60
   },
-};
+});
 
 export default CreditCard;

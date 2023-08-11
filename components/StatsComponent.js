@@ -3,14 +3,16 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Avatar, Card, useTheme } from 'react-native-paper';
 import SimpleMonthChart from './SimpleMonthChart';
+import { useNavigation } from '@react-navigation/native';
 
 function StatsComponent() {
-    const theme = useTheme(); 
+    const theme = useTheme();
+    const navigation = useNavigation(); 
   
     return (
       <View style={styles.container}>  
         <View style={{flex: 2, paddingHorizontal: 10, marginLeft: 10}}>
-          <Card style={{backgroundColor: '#181818'}}>
+          <Card style={{backgroundColor: '#181818', borderRadius: 20, overflow: 'hidden'}}>
               <Card.Content>
                   <Text style={{color: 'lightgrey'}}>This month</Text>
                   <Text style={{color: 'white', fontSize: 18}}>-1256,32 PNL</Text>
@@ -23,7 +25,7 @@ function StatsComponent() {
           </Card>
         </View>
         <View style={{flex: 1, paddingHorizontal: 10, marginRight: 10}}>
-          <Card style={{backgroundColor: '#181818'}}>
+          <Card style={{backgroundColor: '#181818', borderRadius: 20}} onPress={() => navigation.navigate('Statistics')}>
               <Card.Content style={{flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 142}}>
                   <LinearGradient
                       colors={['#fef77f', '#d979a0', '#71ccbc', '#f48d5c']} // Change gradient colors as needed
@@ -41,7 +43,7 @@ function StatsComponent() {
   
   const styles = StyleSheet.create({
     container: {
-      marginTop: 100,
+      marginTop: 90,
       flexDirection: 'row',   
     },
     gradientBorder: {
