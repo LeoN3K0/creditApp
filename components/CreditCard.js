@@ -1,17 +1,36 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Text, Title, Avatar } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
-import { View, StyleSheet} from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios'; // Import axios for making API requests
 
 const CreditCard = ({ cardLimits, currency, expiry, cardNumber }) => {
-const navigation = useNavigation();
+  const navigation = useNavigation();
+  const [activeCardType, setActiveCardType] = useState('basic'); // Initialize with default value
+
+  useEffect(() => {
+    fetchActiveCardType();
+  }, []);
+
+  const fetchActiveCardType = async () => {
+    try {
+      const response = await axios.get('http://192.168.43.11:8082/api/settings/active-card-type'); // Replace with your API endpoint
+      setActiveCardType(response.data.type);
+    } catch (error) {
+      console.error('Error fetching active card type:', error);
+    }
+  };
+
+  const gradientColors = activeCardType === 'basic'
+    ? ['#fa5c56', '#f5b468']
+    : ['#f9e979', '#ff925c', '#f083a9', '#7dd6c5'];
 
   return (
     <Card style={styles.card} onPress={() => navigation.navigate('CardSettings')}>
       <LinearGradient
-        colors={['#fa5c56', '#f5b468']}
+        colors={gradientColors}
         start={{ x: 0, y: 0.5 }} // Start at the left center
         end={{ x: 1, y: 0.5 }}   // End at the right center
         style={styles.gradient}

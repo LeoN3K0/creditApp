@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, PanResponder } from 'react-native';
 import { Card, Text, useTheme } from 'react-native-paper';
 import Svg, { Circle, Line, Text as SvgText } from 'react-native-svg';
+import axios from 'axios';
 
 const SNAP_DISTANCE = 50; // Adjust this value for snapping sensitivity
 const SNAP_POINTS = [100, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000,
@@ -11,7 +12,22 @@ function MonthlyLimit() {
   const theme = useTheme();
 
   const [sliderValue, setSliderValue] = useState(100);
+  const [monthlyLimit, setMonthlyLimit] = useState(100);
 
+  useEffect(() => {
+    fetchMonthlyLimit();
+  }, []);
+
+  const fetchMonthlyLimit = async () => {
+    try {
+      const response = await axios.get('http://192.168.43.11:8082/api/settings/monthly-limit');
+      setMonthlyLimit(response.data.monthlyLimit);
+      setSliderValue(response.data.monthlyLimit);
+    } catch (error) {
+      console.error('Error fetching monthly limit:', error);
+    }
+  };
+  
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onPanResponderMove: (event) => {
@@ -25,8 +41,19 @@ function MonthlyLimit() {
       });
       onSliderValueChange(newSliderValue, closestSnapPoint);
     },
-    onPanResponderRelease: () => {},
+    onPanResponderRelease: () => {
+      updateMonthlyLimit(sliderValue);
+    },
   });
+
+  const updateMonthlyLimit = async (newMonthlyLimit) => {
+    try {
+      await axios.put('http://192.168.43.11:8082/api/settings/monthly-limit', { newMonthlyLimit });
+      setMonthlyLimit(newMonthlyLimit);
+    } catch (error) {
+      console.error('Error updating monthly limit:', error);
+    }
+  };
 
   const onSliderValueChange = (newValue, snapPoint) => {
     if (Math.abs(newValue - snapPoint) <= SNAP_DISTANCE) {

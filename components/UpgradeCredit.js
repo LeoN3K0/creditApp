@@ -1,13 +1,41 @@
-import React, {useState} from 'react';
-import { View, StyleSheet} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet } from 'react-native';
 import { Card, RadioButton, Text, useTheme } from 'react-native-paper';
+import axios from 'axios';
 import BasicCard from './BasicCard';
 import RainbowCard from './RainbowCard';
 
 function UpgradeCredit() {
   const theme = useTheme();
-  const [checked, setChecked] = React.useState('first');
+  const [activeCardType, setActiveCardType] = useState({
+    type: 'basic',
+    price: 0.00,
+  });
 
+  useEffect(() => {
+    fetchActiveCardType();
+  }, []);
+
+  const fetchActiveCardType = async () => {
+    try {
+      const response = await axios.get('http://192.168.43.11:8082/api/settings/active-card-type');
+      setActiveCardType(response.data);
+    } catch (error) {
+      console.error('Error fetching active card type:', error);
+    }
+  };
+
+  const handleRadioButtonPress = async (newCardType) => {
+    if (newCardType !== activeCardType.type) {
+      try {
+        await axios.put('http://192.168.43.11:8082/api/settings/active-card-type', { newCardType });
+        setActiveCardType({ type: newCardType, price: activeCardType.price });
+      } catch (error) {
+        console.error('Error updating active card type:', error);
+      }
+    }
+  };
+  
   return (
     <View style={styles.container}>
       <Text style={{ color: 'white', fontSize: 16, marginBottom: 10 }}>Upgrade to Creda rainbow</Text>
@@ -17,10 +45,10 @@ function UpgradeCredit() {
                 <View style={{flexDirection: 'row'}}>
                 <View style={{marginRight: 10, marginTop: 5}}>
                 <RadioButton
-                    value="first"
-                    status={ checked === 'first' ? 'checked' : 'unchecked' }
-                    onPress={() => setChecked('first')}
-                    color='white'
+                  value="basic"
+                  status={activeCardType.type === 'basic' ? 'checked' : 'unchecked'}
+                  onPress={() => handleRadioButtonPress('basic')}
+                  color='white'
                 />
                 </View>
                 <View>
@@ -37,10 +65,10 @@ function UpgradeCredit() {
                 <View style={{flexDirection: 'row'}}>
                 <View style={{marginRight: 10, marginTop: 5}}>
                 <RadioButton
-                    value="first"
-                    status={ checked === 'second' ? 'checked' : 'unchecked' }
-                    onPress={() => setChecked('second')}
-                    color='white'
+                  value="rainbow"
+                  status={activeCardType.type === 'rainbow' ? 'checked' : 'unchecked'}
+                  onPress={() => handleRadioButtonPress('rainbow')}
+                  color='white'
                 />
                 </View>
                 <View>
