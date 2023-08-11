@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Card, Text, Title, Avatar } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import { View, StyleSheet} from 'react-native';

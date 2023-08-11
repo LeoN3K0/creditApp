@@ -1,12 +1,14 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { useTheme } from 'react-native-paper';
 import { AreaChart } from 'react-native-svg-charts';
 import * as shape from 'd3-shape';
 import { Defs, Stop, LinearGradient, Path } from 'react-native-svg';
+import axios from 'axios';
 
 function SimpleMonthChart() {
     const theme = useTheme(); 
-    const data = [20.5, 5, 5, 10, 20, 10, 30, 20, 20, 30, 10];
+    const [data, setData] = useState([]);
+
     const Line = ({ line }) => (
       <Path
           key={'line'}
@@ -16,6 +18,24 @@ function SimpleMonthChart() {
           strokeWidth={3}
       />
     )
+
+    const fetchTransactions = () => {
+        axios.get('http://192.168.43.11:8082/api/transactions')
+          .then(response => {
+            const currentMonth = new Date().toLocaleString('default', { month: 'long' });
+            const currentMonthTransactions = response.data.filter(transaction => transaction.month === currentMonth);
+            
+            const amounts = currentMonthTransactions.map(transaction => parseFloat(transaction.amount.replace(' PLN', '')));
+            setData(amounts);
+          })
+          .catch(error => {
+            console.error('Error fetching transactions:', error);
+          });
+      };
+    
+      useEffect(() => {
+        fetchTransactions();
+      }, []);
   
     return (       
         <AreaChart
