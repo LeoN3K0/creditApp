@@ -1,13 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Card, Text, useTheme } from 'react-native-paper';
 import Svg, { Defs, LinearGradient, Stop, Rect } from 'react-native-svg';
+import axios from 'axios';
+import { useMonthContext } from '../MonthContext';
+import { useNavigation } from '@react-navigation/native';
 
 function StatsLimit() {
   const theme = useTheme();
+  const navigation = useNavigation();
+  const { selectedMonth } = useMonthContext();
+  const [totalSpendAmount, setTotalSpendAmount] = useState(0);
+  const [monthlyLimit, setMonthlyLimit] = useState(0);
+  const [limit, setLimit] = useState(0);
 
-  const currentLimit = 907.21; // Update this to your current limit
-  const maxLimit = 2000.0;
+  const fetchTransactions = () => {
+    axios.get('http://192.168.132.114:8082/api/transactions')
+      .then(response => {
+        const monthTransactions = response.data.filter(transaction => transaction.month === selectedMonth);
+
+        const totalSpendAmount = monthTransactions.reduce((total, transaction) => {
+          const amount = parseFloat(transaction.amount.replace(' PLN', ''));
+          return total + amount;
+        }, 0);
+  
+        setTotalSpendAmount(totalSpendAmount);
+      })
+      .catch(error => {
+        console.error('Error fetching transactions:', error);
+      });
+  };
+
+  const fetchMonthlyLimit = () => {
+    axios.get('http://192.168.132.114:8082/api/settings/monthly-limit')
+      .then(response => {
+        setMonthlyLimit(parseFloat(response.data.monthlyLimit));
+      })
+      .catch(error => {
+        console.error('Error fetching monthly limit:', error);
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    fetchTransactions();
+    fetchMonthlyLimit();  
+  }, [navigation, selectedMonth]);
+
+  useEffect(() => {
+    setLimit(monthlyLimit - totalSpendAmount);
+  }, [monthlyLimit, totalSpendAmount]);
+
+  const currentLimit = limit; 
+  const maxLimit = monthlyLimit;
 
   const progress = currentLimit / maxLimit; // Calculate the progress ratio between 0 and 1
 

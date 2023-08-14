@@ -1,60 +1,89 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, ScrollView } from 'react-native';
 import { useTheme, Text, Button } from 'react-native-paper';
 import { AreaChart } from 'react-native-svg-charts';
 import * as shape from 'd3-shape';
 import { Defs, Stop, LinearGradient, Path } from 'react-native-svg';
+import { useMonthContext } from '../MonthContext'; 
+import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
 function StatisticsChart() {
-    const theme = useTheme();
-    const data = [21.10, 22.10, 22.10, 22.10, 23.10, 24.10];
+  const theme = useTheme();
+  const [data, setData] = useState([]);
+  const { selectedMonth, setMonth } = useMonthContext(); 
+  const navigation = useNavigation();
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
 
-    const [activeIndex, setActiveIndex] = useState(-1);
+  const Line = ({ line }) => (
+    <Path
+      key={'line'}
+      d={line}
+      stroke={'url(#lineGradient)'}
+      fill={'none'}
+      strokeWidth={3}
+    />
+  );
 
-    const months = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-    ];
+  const handleMonthClick = (index) => {
+    setMonth(months[index]); 
+  };
 
-    const Line = ({ line }) => (
-        <Path
-            key={'line'}
-            d={line}
-            stroke={'url(#lineGradient)'}
-            fill={'none'}
-            strokeWidth={3}
-        />
-    );
+  const fetchTransactions = () => {
+    axios.get('http://192.168.132.114:8082/api/transactions')
+      .then(response => {
+        const monthTransactions = response.data.filter(transaction => transaction.month === selectedMonth);
+    
+        
+        const amounts = monthTransactions.map(transaction => parseFloat(transaction.amount.replace(' PLN', '')));
+        setData(amounts);
 
-    const handleMonthClick = (index) => {
-        setActiveIndex(index === activeIndex ? -1 : index);
-    };
+      })
+      .catch(error => {
+        console.error('Error fetching transactions:', error);
+      });
+  };
+
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
+
+  useEffect(() => {
+    fetchTransactions();
+  }, [handleMonthClick, navigation]);
+  
+
 
     return (
         <View style={{}}>
-            <ScrollView horizontal style={{marginBottom: -75}}> 
+           <ScrollView horizontal style={{marginBottom: -75}}> 
                 <View style={{ flexDirection: 'row'}}>
-                    {months.map((month, index) => (
-                        <Button
-                            key={index}
-                            onPress={() => handleMonthClick(index)}
-                            disabled={activeIndex === index}
-                            style={{
-                                paddingHorizontal: 10,
-                                marginRight: 10,
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    color: activeIndex === index ? 'white' : 'grey'
-                                }}
-                            >
-                                {month}
-                            </Text>
-                        </Button>
-                    ))}
+                {months.map((month, index) => (
+                    <Button
+                    key={index}
+                    onPress={() => handleMonthClick(index)}
+                    disabled={selectedMonth === month}
+                    style={{
+                        paddingHorizontal: 10,
+                        marginRight: 10,
+                    }}
+                    >
+                    <Text
+                        style={{
+                        color: selectedMonth === month ? 'white' : 'grey'
+                        }}
+                    >
+                        {month}
+                    </Text>
+                    </Button>
+                ))}
                 </View>
             </ScrollView>
+            {data.length > 0 ? ( 
+            <>           
             <AreaChart
                 style={{ flex: 1}}
                 data={data}
@@ -105,6 +134,10 @@ function StatisticsChart() {
                     </ScrollView>
                 </View>
             </ScrollView>
+            </>
+            ) :(
+                <Text style={{color: 'white', alignSelf: 'center', marginBottom: 100, fontSize: 20}}>No Data....</Text>
+            )}
         </View>
     );
 }

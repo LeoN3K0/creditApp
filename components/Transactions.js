@@ -13,7 +13,7 @@ function Transaction() {
 
 
     const fetchTransactions = () => {
-        axios.get('http://192.168.43.11:8082/api/transactions')
+        axios.get('http://192.168.132.114:8082/api/transactions')
           .then(response => {
             const currentMonthTransactions = response.data.filter(transaction => transaction.month === currentMonth);
             setTransactions(currentMonthTransactions);
@@ -26,7 +26,7 @@ function Transaction() {
       };
 
       const fetchAverage = () => {
-        axios.get(`http://192.168.43.11:8082/api/average-spent/${currentMonth}`)
+        axios.get(`http://192.168.132.114:8082/api/average-spent/${currentMonth}`)
           .then(response => {
             setAverageSpent(response.data.averageSpent);
     

@@ -16,7 +16,7 @@ const CreditCard = ({ cardLimits, currency, expiry, cardNumber }) => {
 
   const fetchActiveCardType = async () => {
     try {
-      const response = await axios.get('http://192.168.43.11:8082/api/settings/active-card-type'); // Replace with your API endpoint
+      const response = await axios.get('http://192.168.132.114:8082/api/settings/active-card-type'); // Replace with your API endpoint
       setActiveCardType(response.data.type);
     } catch (error) {
       console.error('Error fetching active card type:', error);

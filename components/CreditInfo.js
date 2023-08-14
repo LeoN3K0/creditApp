@@ -10,7 +10,7 @@ function CreditInfo() {
   const navigation = useNavigation();
 
   const fetchCreditData = () => {
-    axios.get('http://192.168.43.11:8082/api/credit-cards')
+    axios.get('http://192.168.132.114:8082/api/credit-cards')
       .then(response => {
         setCreditData(response.data[0]);
       })

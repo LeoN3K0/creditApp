@@ -20,7 +20,7 @@ function SimpleMonthChart() {
     )
 
     const fetchTransactions = () => {
-        axios.get('http://192.168.43.11:8082/api/transactions')
+        axios.get('http://192.168.132.114:8082/api/transactions')
           .then(response => {
             const currentMonth = new Date().toLocaleString('default', { month: 'long' });
             const currentMonthTransactions = response.data.filter(transaction => transaction.month === currentMonth);

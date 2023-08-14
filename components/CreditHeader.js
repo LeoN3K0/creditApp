@@ -12,7 +12,7 @@ function CreditHeader({ title }) {
   const [cardLimit, setCardLimit] = useState(0);
 
   const fetchCreditData = () => {
-    axios.get('http://192.168.43.11:8082/api/credit-cards')
+    axios.get('http://192.168.132.114:8082/api/credit-cards')
       .then(response => {
         setCreditData(response.data[0]);
         setLoading(false);
@@ -24,7 +24,7 @@ function CreditHeader({ title }) {
   };
   
   const fetchTransactions = () => {
-    axios.get('http://192.168.43.11:8082/api/transactions')
+    axios.get('http://192.168.132.114:8082/api/transactions')
       .then(response => {
         const currentMonth = new Date().toLocaleString('default', { month: 'long' });
         const currentMonthTransactions = response.data.filter(transaction => transaction.month === currentMonth);
@@ -42,7 +42,7 @@ function CreditHeader({ title }) {
   };
 
   const fetchMonthlyLimit = () => {
-    axios.get('http://192.168.43.11:8082/api/settings/monthly-limit')
+    axios.get('http://192.168.132.114:8082/api/settings/monthly-limit')
       .then(response => {
         setMonthlyLimit(parseFloat(response.data.monthlyLimit));
       })

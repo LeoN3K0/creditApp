@@ -20,7 +20,7 @@ function MonthlyLimit() {
 
   const fetchMonthlyLimit = async () => {
     try {
-      const response = await axios.get('http://192.168.43.11:8082/api/settings/monthly-limit');
+      const response = await axios.get('http://192.168.132.114:8082/api/settings/monthly-limit');
       setMonthlyLimit(response.data.monthlyLimit);
       setSliderValue(response.data.monthlyLimit);
     } catch (error) {
@@ -48,7 +48,7 @@ function MonthlyLimit() {
 
   const updateMonthlyLimit = async (newMonthlyLimit) => {
     try {
-      await axios.put('http://192.168.43.11:8082/api/settings/monthly-limit', { newMonthlyLimit });
+      await axios.put('http://192.168.132.114:8082/api/settings/monthly-limit', { newMonthlyLimit });
       setMonthlyLimit(newMonthlyLimit);
     } catch (error) {
       console.error('Error updating monthly limit:', error);
