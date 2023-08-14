@@ -4,10 +4,12 @@ import { AreaChart } from 'react-native-svg-charts';
 import * as shape from 'd3-shape';
 import { Defs, Stop, LinearGradient, Path } from 'react-native-svg';
 import axios from 'axios';
+import { useFocusEffect } from '@react-navigation/native';
 
 function SimpleMonthChart() {
     const theme = useTheme(); 
     const [data, setData] = useState([]);
+    const apiBaseUrl = process.env.EXPO_PUBLIC_BASE_URL;
 
     const Line = ({ line }) => (
       <Path
@@ -20,7 +22,7 @@ function SimpleMonthChart() {
     )
 
     const fetchTransactions = () => {
-        axios.get('http://192.168.132.114:8082/api/transactions')
+        axios.get(`${apiBaseUrl}transactions`)
           .then(response => {
             const currentMonth = new Date().toLocaleString('default', { month: 'long' });
             const currentMonthTransactions = response.data.filter(transaction => transaction.month === currentMonth);
@@ -36,6 +38,10 @@ function SimpleMonthChart() {
       useEffect(() => {
         fetchTransactions();
       }, []);
+      
+      /*useFocusEffect(() => {
+        fetchTransactions();
+      });*/
   
     return (       
         <AreaChart

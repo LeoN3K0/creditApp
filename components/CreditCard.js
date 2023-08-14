@@ -3,20 +3,27 @@ import { Card, Text, Title, Avatar } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import { View, StyleSheet } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import axios from 'axios'; // Import axios for making API requests
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import axios from 'axios';
 
 const CreditCard = ({ cardLimits, currency, expiry, cardNumber }) => {
   const navigation = useNavigation();
   const [activeCardType, setActiveCardType] = useState('basic'); // Initialize with default value
+  const apiBaseUrl = process.env.EXPO_PUBLIC_BASE_URL;
+
 
   useEffect(() => {
     fetchActiveCardType();
   }, []);
 
+  useFocusEffect(() => {
+    fetchActiveCardType();
+  });
+
+
   const fetchActiveCardType = async () => {
     try {
-      const response = await axios.get('http://192.168.132.114:8082/api/settings/active-card-type'); // Replace with your API endpoint
+      const response = await axios.get(`${apiBaseUrl}settings/active-card-type`); // Replace with your API endpoint
       setActiveCardType(response.data.type);
     } catch (error) {
       console.error('Error fetching active card type:', error);

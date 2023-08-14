@@ -4,18 +4,18 @@ import { Card, Text, useTheme } from 'react-native-paper';
 import Svg, { Defs, LinearGradient, Stop, Rect } from 'react-native-svg';
 import axios from 'axios';
 import { useMonthContext } from '../MonthContext';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 
 function StatsLimit() {
   const theme = useTheme();
-  const navigation = useNavigation();
   const { selectedMonth } = useMonthContext();
   const [totalSpendAmount, setTotalSpendAmount] = useState(0);
   const [monthlyLimit, setMonthlyLimit] = useState(0);
   const [limit, setLimit] = useState(0);
+  const apiBaseUrl = process.env.EXPO_PUBLIC_BASE_URL;
 
   const fetchTransactions = () => {
-    axios.get('http://192.168.132.114:8082/api/transactions')
+    axios.get(`${apiBaseUrl}transactions`)
       .then(response => {
         const monthTransactions = response.data.filter(transaction => transaction.month === selectedMonth);
 
@@ -32,7 +32,7 @@ function StatsLimit() {
   };
 
   const fetchMonthlyLimit = () => {
-    axios.get('http://192.168.132.114:8082/api/settings/monthly-limit')
+    axios.get(`${apiBaseUrl}settings/monthly-limit`)
       .then(response => {
         setMonthlyLimit(parseFloat(response.data.monthlyLimit));
       })
@@ -45,11 +45,16 @@ function StatsLimit() {
   useEffect(() => {
     fetchTransactions();
     fetchMonthlyLimit();  
-  }, [navigation, selectedMonth]);
+  }, [selectedMonth]);
 
   useEffect(() => {
     setLimit(monthlyLimit - totalSpendAmount);
   }, [monthlyLimit, totalSpendAmount]);
+
+  useFocusEffect(() => {
+    fetchMonthlyLimit();
+    fetchTransactions();
+  });
 
   const currentLimit = limit; 
   const maxLimit = monthlyLimit;

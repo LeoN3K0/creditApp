@@ -4,12 +4,14 @@ import { Card, IconButton, Text, useTheme } from "react-native-paper";
 import PercentCircle from './PercentCircle';
 import { useMonthContext } from '../MonthContext';
 import axios from "axios";
+import { useFocusEffect } from "@react-navigation/native";
 
 function SpendingSummary() {
     const theme = useTheme();
     const { selectedMonth } = useMonthContext();
     const [totalSpendAmount, setTotalSpendAmount] = useState(0);
     const [categoryTotals, setCategoryTotals] = useState();
+    const apiBaseUrl = process.env.EXPO_PUBLIC_BASE_URL;
 
     const spendingCategories = [
         { name: 'Entertainment', color: '#89fee3' },
@@ -24,7 +26,7 @@ function SpendingSummary() {
     };
 
     const fetchTransactions = () => {
-        axios.get('http://192.168.132.114:8082/api/transactions')
+        axios.get(`${apiBaseUrl}transactions`)
             .then(response => {
             const monthTransactions = response.data.filter(transaction => transaction.month === selectedMonth);
 

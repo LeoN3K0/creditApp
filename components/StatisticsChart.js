@@ -6,13 +6,13 @@ import * as shape from 'd3-shape';
 import { Defs, Stop, LinearGradient, Path } from 'react-native-svg';
 import { useMonthContext } from '../MonthContext'; 
 import axios from 'axios';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 
 function StatisticsChart() {
   const theme = useTheme();
   const [data, setData] = useState([]);
   const { selectedMonth, setMonth } = useMonthContext(); 
-  const navigation = useNavigation();
+  const apiBaseUrl = process.env.EXPO_PUBLIC_BASE_URL;
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
@@ -33,7 +33,7 @@ function StatisticsChart() {
   };
 
   const fetchTransactions = () => {
-    axios.get('http://192.168.132.114:8082/api/transactions')
+    axios.get(`${apiBaseUrl}transactions`)
       .then(response => {
         const monthTransactions = response.data.filter(transaction => transaction.month === selectedMonth);
     
@@ -53,7 +53,8 @@ function StatisticsChart() {
 
   useEffect(() => {
     fetchTransactions();
-  }, [handleMonthClick, navigation]);
+  }, [selectedMonth]);
+
   
 
 

@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Avatar, Card, useTheme } from 'react-native-paper';
 import SimpleMonthChart from './SimpleMonthChart';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 
 function StatsComponent() {
@@ -12,10 +12,10 @@ function StatsComponent() {
     const [loading, setLoading] = useState(true);
     const [totalSpendAmount, setTotalSpendAmount] = useState(0);
     const [currentMonthTransactions, setCurrentMonthTransactions] = useState([]);
-
+    const apiBaseUrl = process.env.EXPO_PUBLIC_BASE_URL;
   
   const fetchTransactions = () => {
-    axios.get('http://192.168.132.114:8082/api/transactions')
+    axios.get(`${apiBaseUrl}transactions`)
       .then(response => {
         const currentMonth = new Date().toLocaleString('default', { month: 'long' });
         const currentMonthTransactions = response.data.filter(transaction => transaction.month === currentMonth);
@@ -37,6 +37,10 @@ function StatsComponent() {
   useEffect(() => {
     fetchTransactions();
   }, []);
+
+  /*useFocusEffect(() => {
+    fetchTransactions();
+  });*/
   
     return (
       <View style={styles.container}>  

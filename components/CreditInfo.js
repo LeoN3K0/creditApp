@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet} from 'react-native';
 import { Card, IconButton, Text, useTheme } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 
 function CreditInfo() {
   const theme = useTheme();
   const [creditData, setCreditData] = useState();
-  const navigation = useNavigation();
+  const apiBaseUrl = process.env.EXPO_PUBLIC_BASE_URL;
 
   const fetchCreditData = () => {
-    axios.get('http://192.168.132.114:8082/api/credit-cards')
+    axios.get(`${apiBaseUrl}credit-cards`)
       .then(response => {
         setCreditData(response.data[0]);
       })
@@ -22,7 +22,11 @@ function CreditInfo() {
   useEffect(() => {
     fetchCreditData();
 
-  }, [navigation]);
+  }, []);
+
+  useFocusEffect(() => {
+    fetchCreditData();
+  });
 
   return (
     <View style={styles.container}>

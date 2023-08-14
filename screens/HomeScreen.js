@@ -1,9 +1,11 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTheme } from 'react-native-paper'; // Import useTheme hook
 
 function HomeScreen() {
   const theme = useTheme(); // Use the theme
+  
 
   return (
     <View style={[styles.container, { backgroundColor: '#101010' }]}>

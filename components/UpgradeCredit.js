@@ -7,6 +7,7 @@ import RainbowCard from './RainbowCard';
 
 function UpgradeCredit() {
   const theme = useTheme();
+  const apiBaseUrl = process.env.EXPO_PUBLIC_BASE_URL;
   const [activeCardType, setActiveCardType] = useState({
     type: 'basic',
     price: 0.00,
@@ -18,7 +19,7 @@ function UpgradeCredit() {
 
   const fetchActiveCardType = async () => {
     try {
-      const response = await axios.get('http://192.168.132.114:8082/api/settings/active-card-type');
+      const response = await axios.get(`${apiBaseUrl}settings/active-card-type`);
       setActiveCardType(response.data);
     } catch (error) {
       console.error('Error fetching active card type:', error);
@@ -28,7 +29,7 @@ function UpgradeCredit() {
   const handleRadioButtonPress = async (newCardType) => {
     if (newCardType !== activeCardType.type) {
       try {
-        await axios.put('http://192.168.132.114:8082/api/settings/active-card-type', { newCardType });
+        await axios.put(`${apiBaseUrl}settings/active-card-type`, { newCardType });
         setActiveCardType({ type: newCardType, price: activeCardType.price });
       } catch (error) {
         console.error('Error updating active card type:', error);

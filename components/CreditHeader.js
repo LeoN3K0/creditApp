@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Appbar, Avatar, Text } from 'react-native-paper';
 import CreditCard from './CreditCard';
 import axios from 'axios';
+import { useFocusEffect } from '@react-navigation/native';
 
 function CreditHeader({ title }) {
   const [loading, setLoading] = useState(true);
@@ -10,9 +11,10 @@ function CreditHeader({ title }) {
   const [monthlyLimit, setMonthlyLimit] = useState(0);
   const [totalSpendAmount, setTotalSpendAmount] = useState(0);
   const [cardLimit, setCardLimit] = useState(0);
+  const apiBaseUrl = process.env.EXPO_PUBLIC_BASE_URL;
 
   const fetchCreditData = () => {
-    axios.get('http://192.168.132.114:8082/api/credit-cards')
+    axios.get(`${apiBaseUrl}credit-cards`)
       .then(response => {
         setCreditData(response.data[0]);
         setLoading(false);
@@ -24,7 +26,7 @@ function CreditHeader({ title }) {
   };
   
   const fetchTransactions = () => {
-    axios.get('http://192.168.132.114:8082/api/transactions')
+    axios.get(`${apiBaseUrl}transactions`)
       .then(response => {
         const currentMonth = new Date().toLocaleString('default', { month: 'long' });
         const currentMonthTransactions = response.data.filter(transaction => transaction.month === currentMonth);
@@ -42,7 +44,7 @@ function CreditHeader({ title }) {
   };
 
   const fetchMonthlyLimit = () => {
-    axios.get('http://192.168.132.114:8082/api/settings/monthly-limit')
+    axios.get(`${apiBaseUrl}settings/monthly-limit`)
       .then(response => {
         setMonthlyLimit(parseFloat(response.data.monthlyLimit));
       })
@@ -51,12 +53,18 @@ function CreditHeader({ title }) {
         setLoading(false);
       });
   };
-
+  
   useEffect(() => {
     fetchCreditData();
     fetchTransactions();
     fetchMonthlyLimit();
   }, []);
+
+  useFocusEffect(() => {
+    fetchCreditData();
+    fetchTransactions();
+    fetchMonthlyLimit();
+  });
 
   useEffect(() => {
     setCardLimit(monthlyLimit - totalSpendAmount);

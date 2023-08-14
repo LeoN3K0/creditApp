@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Avatar, Card, IconButton, Text, useTheme } from "react-native-paper";
 import axios from "axios";
+import { useFocusEffect } from "@react-navigation/native";
 
 
 function Transaction() {
@@ -10,10 +11,11 @@ function Transaction() {
     const [averageSpent, setAverageSpent] = useState(0);
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
+    const apiBaseUrl = process.env.EXPO_PUBLIC_BASE_URL;
 
 
     const fetchTransactions = () => {
-        axios.get('http://192.168.132.114:8082/api/transactions')
+        axios.get(`${apiBaseUrl}transactions`)
           .then(response => {
             const currentMonthTransactions = response.data.filter(transaction => transaction.month === currentMonth);
             setTransactions(currentMonthTransactions);
@@ -26,7 +28,7 @@ function Transaction() {
       };
 
       const fetchAverage = () => {
-        axios.get(`http://192.168.132.114:8082/api/average-spent/${currentMonth}`)
+        axios.get(`${apiBaseUrl}average-spent/${currentMonth}`)
           .then(response => {
             setAverageSpent(response.data.averageSpent);
     
@@ -40,6 +42,11 @@ function Transaction() {
         fetchTransactions();
         fetchAverage();
       }, []);
+
+      /*useFocusEffect(() => {
+        fetchAverage();
+        fetchTransactions();
+      });*/
 
       const getAvatarIconAndColor = (type) => {
         switch (type) {

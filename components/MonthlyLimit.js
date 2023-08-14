@@ -10,6 +10,7 @@ const SNAP_POINTS = [100, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5
 
 function MonthlyLimit() {
   const theme = useTheme();
+  const apiBaseUrl = process.env.EXPO_PUBLIC_BASE_URL;
 
   const [sliderValue, setSliderValue] = useState(100);
   const [monthlyLimit, setMonthlyLimit] = useState(100);
@@ -20,7 +21,7 @@ function MonthlyLimit() {
 
   const fetchMonthlyLimit = async () => {
     try {
-      const response = await axios.get('http://192.168.132.114:8082/api/settings/monthly-limit');
+      const response = await axios.get(`${apiBaseUrl}settings/monthly-limit`);
       setMonthlyLimit(response.data.monthlyLimit);
       setSliderValue(response.data.monthlyLimit);
     } catch (error) {
@@ -48,7 +49,7 @@ function MonthlyLimit() {
 
   const updateMonthlyLimit = async (newMonthlyLimit) => {
     try {
-      await axios.put('http://192.168.132.114:8082/api/settings/monthly-limit', { newMonthlyLimit });
+      await axios.put(`${apiBaseUrl}settings/monthly-limit`, { newMonthlyLimit });
       setMonthlyLimit(newMonthlyLimit);
     } catch (error) {
       console.error('Error updating monthly limit:', error);

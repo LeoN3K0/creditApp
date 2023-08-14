@@ -4,20 +4,20 @@ import { Text, useTheme } from 'react-native-paper'; // Import useTheme hook
 import StatsLimit from '../components/StatsLimit';
 import IncomeCard from '../components/IncomeCard';
 import SpendingSummary from '../components/SpendingSummary';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import { useMonthContext } from '../MonthContext';
 
 function StatisticsScreen() {
   const theme = useTheme();
   const [monthlyIncome, setMonthlyIncome] = useState();
-  const navigation = useNavigation;
   const { selectedMonth } = useMonthContext();
   const [totalSpendAmount, setTotalSpendAmount] = useState(0);
   const percent = (totalSpendAmount / monthlyIncome).toFixed(2) * 100;
+  const apiBaseUrl = process.env.EXPO_PUBLIC_BASE_URL;
 
     const fetchCreditData = () => {
-      axios.get('http://192.168.132.114:8082/api/credit-cards')
+      axios.get(`${apiBaseUrl}credit-cards`)
         .then(response => {
           setMonthlyIncome(response.data[0].monthlyIncome);
         })
@@ -27,7 +27,7 @@ function StatisticsScreen() {
     };  
 
     const fetchTransactions = () => {
-      axios.get('http://192.168.132.114:8082/api/transactions')
+      axios.get(`${apiBaseUrl}transactions`)
         .then(response => {
           const monthTransactions = response.data.filter(transaction => transaction.month === selectedMonth);
   
@@ -46,7 +46,8 @@ function StatisticsScreen() {
     useEffect(() => {
       fetchCreditData();
       fetchTransactions();  
-    }, [navigation, selectedMonth]);
+    }, [selectedMonth]);
+
 
   return (
     <View style={[styles.container, { backgroundColor: '#101010' }]}>
